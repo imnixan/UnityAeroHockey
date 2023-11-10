@@ -4,13 +4,35 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using DG.Tweening;
+
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI goalText;
-    [SerializeField] private TextMeshProUGUI endText;
-    [SerializeField] private GameObject endCanvas;
+    [SerializeField]
+    private TextMeshProUGUI endText,
+        tigerScore,
+        bullScore;
+
+    [SerializeField]
+    private Image winnerPlate;
+
+    [SerializeField]
+    private GameObject endCanvas;
+
+    [SerializeField]
+    private Image character;
+
+    [SerializeField]
+    private Sprite bull,
+        tiger;
+
     public static event UnityAction StartRound;
+
+    [SerializeField]
     private RectTransform goalPos;
+
+    private GameGoalsCounter gameGoalsCounter;
 
     void Awake()
     {
@@ -24,7 +46,7 @@ public class GameController : MonoBehaviour
         GameGoalsCounter.GameEnd += GameEnd;
 
         endCanvas.SetActive(false);
-        goalPos = goalText.GetComponent<RectTransform>();
+        gameGoalsCounter = FindAnyObjectByType<GameGoalsCounter>();
     }
 
     void OnDisable()
@@ -35,45 +57,48 @@ public class GameController : MonoBehaviour
 
     private void OnGoalsHappens(int playerId)
     {
-        StartCoroutine(GoalMessage(playerId));
+        Sequence goalShow = DOTween.Sequence();
+        goalShow
+            .PrependCallback(() =>
+            {
+                character.sprite = playerId == 0 ? tiger : bull;
+                goalPos.anchoredPosition = new Vector2(1000, 0);
+            })
+            .Append(goalPos.DOAnchorPosX(0, 0.7f))
+            .AppendInterval(0.8f)
+            .Append(goalPos.DOAnchorPosX(-1000, 0.5f))
+            .AppendCallback(() =>
+            {
+                goalPos.anchoredPosition = new Vector2(1000, 0);
+                StartRound?.Invoke();
+            });
+        goalShow.Restart();
     }
-    
+
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Exit();
         }
     }
 
-    IEnumerator GoalMessage(int playerId)
-    {
-        goalText.color = playerId == 0? Color.red : Color.blue;
-        goalPos.anchoredPosition = new Vector2(1000, 0);
-        while(goalPos.anchoredPosition.x > -1000)
-        {
-            goalPos.anchoredPosition = Vector2.MoveTowards(goalPos.anchoredPosition, new Vector2(-1000, 0), 20f);
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-        }
-        StartRound?.Invoke();
-    }
-
     private void GameEnd(int winner)
     {
         endCanvas.SetActive(true);
-        if(winner == 1)
+        bullScore.text = gameGoalsCounter.playersGoals[1].ToString();
+        tigerScore.text = gameGoalsCounter.playersGoals[0].ToString();
+        if (winner == 1)
         {
-            endText.text = "Blue Wins";
-            endText.color = Color.blue;
+            endText.text = "Bulls Wins";
+            winnerPlate.color = Color.blue;
         }
         else
         {
-            endText.text = "Red Wins";
-            endText.color = Color.red;
+            endText.text = "Tigers Wins";
+            winnerPlate.color = Color.red;
         }
-
     }
-
 
     public void Exit()
     {

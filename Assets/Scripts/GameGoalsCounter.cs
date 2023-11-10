@@ -6,9 +6,12 @@ using UnityEngine.Events;
 
 public class GameGoalsCounter : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI[] playersGoalsCounter;
-    [SerializeField] int[] playersGoals = new int[2];
-    public static event UnityAction <int> GameEnd;
+    [SerializeField]
+    private TextMeshProUGUI[] playersGoalsCounter;
+
+    [SerializeField]
+    public int[] playersGoals = new int[2];
+    public static event UnityAction<int> GameEnd;
 
     private void Start()
     {
@@ -17,17 +20,16 @@ public class GameGoalsCounter : MonoBehaviour
 
     void OnDisable()
     {
-       Puck.PlayerScoredGoal -= OnGoalsHappen;
+        Puck.PlayerScoredGoal -= OnGoalsHappen;
     }
 
     private void OnGoalsHappen(int playerId)
     {
-        playersGoals[playerId] ++;
-        if(playersGoals[playerId] == 5)
+        playersGoals[playerId]++;
+        if (playersGoals[playerId] == 5)
         {
             GameEnd?.Invoke(playerId);
         }
-        playersGoalsCounter[playerId].text = playersGoals[playerId].ToString(); 
+        playersGoalsCounter[playerId].text = playersGoals[playerId].ToString();
     }
-
 }
