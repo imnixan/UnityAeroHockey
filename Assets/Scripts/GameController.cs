@@ -27,6 +27,12 @@ public class GameController : MonoBehaviour
     private Sprite bull,
         tiger;
 
+    [SerializeField]
+    private ParticleSystem[] confetti;
+
+    [SerializeField]
+    private ParticleSystem[] shine;
+
     public static event UnityAction StartRound;
 
     [SerializeField]
@@ -57,6 +63,7 @@ public class GameController : MonoBehaviour
 
     private void OnGoalsHappens(int playerId)
     {
+        confetti[playerId].Play();
         Sequence goalShow = DOTween.Sequence();
         goalShow
             .PrependCallback(() =>
@@ -88,6 +95,7 @@ public class GameController : MonoBehaviour
         endCanvas.SetActive(true);
         bullScore.text = gameGoalsCounter.playersGoals[1].ToString();
         tigerScore.text = gameGoalsCounter.playersGoals[0].ToString();
+        shine[winner].Play();
         if (winner == 1)
         {
             endText.text = "Bulls Wins";
