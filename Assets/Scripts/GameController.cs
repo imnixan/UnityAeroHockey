@@ -115,6 +115,6 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadScene("AirHockey");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

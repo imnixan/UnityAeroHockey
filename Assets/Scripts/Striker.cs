@@ -11,6 +11,9 @@ public class Striker : MonoBehaviour
     [SerializeField]
     private bool botField;
 
+    [SerializeField]
+    private ParticleSystem flash;
+
     protected RectTransform rt;
     protected Rigidbody2D rb;
     protected float radius;
@@ -90,5 +93,14 @@ public class Striker : MonoBehaviour
     private void GameEnd(int winner)
     {
         Destroy(gameObject);
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Puck"))
+        {
+            flash.transform.position = other.contacts[0].point;
+            flash.Play();
+        }
     }
 }

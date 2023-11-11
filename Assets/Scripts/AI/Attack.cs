@@ -6,9 +6,6 @@ public class Attack : AiBehaivor
 {
     private bool onAttackPosition;
 
-    [SerializeField]
-    private ParticleSystem flash;
-
     void OnEnabled()
     {
         onAttackPosition = striker.position.y >= puck.position.y + 1;
@@ -36,8 +33,6 @@ public class Attack : AiBehaivor
         {
             onAttackPosition = false;
             other.gameObject.GetComponent<Puck>().Push();
-            flash.transform.position = other.contacts[0].point;
-            flash.Play();
         }
     }
 }

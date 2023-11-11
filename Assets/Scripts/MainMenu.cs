@@ -3,47 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
+
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private Image soundStriker;
-    [SerializeField] private Image vibroStriker;
-    private Dictionary <string, Image> buttons = new Dictionary<string, Image>();
+    [SerializeField]
+    private Image soundIcon,
+        vibroIcon;
+
+    [SerializeField]
+    private Sprite[] sound,
+        vibro;
+
+    [SerializeField]
+    private TextMeshProUGUI appname;
 
     void Awake()
     {
-        Screen.orientation = ScreenOrientation.Portrait; 
+        Screen.orientation = ScreenOrientation.Portrait;
+        Application.targetFrameRate = 300;
     }
 
-   void Start()
-   {
-        buttons.Add("SoundEffects", soundStriker);
-        buttons.Add("VibroEffects", vibroStriker);
-
-        foreach(var button in buttons)
-        {
-            button.Value.color = PlayerPrefs.GetInt(button.Key,1) == 1? Color.blue : Color.red;
-        }
-   }
-
-
-    public void UpdateStriker(string striker)
+    void Start()
     {
-        PlayerPrefs.SetInt(striker, PlayerPrefs.GetInt(striker, 1) == 1? 0 : 1);
-        PlayerPrefs.Save();
-        buttons[striker].color = PlayerPrefs.GetInt(striker) == 1? Color.blue : Color.red;
+        soundIcon.sprite = sound[PlayerPrefs.GetInt("SoundEffects", 1)];
+        vibroIcon.sprite = vibro[PlayerPrefs.GetInt("VibroEffects", 1)];
+        appname.text = Application.productName;
     }
 
+    public void ChangeSound()
+    {
+        PlayerPrefs.SetInt("SoundEffects", PlayerPrefs.GetInt("SoundEffects", 1) == 1 ? 0 : 1);
+        PlayerPrefs.Save();
+        soundIcon.sprite = sound[PlayerPrefs.GetInt("SoundEffects", 1)];
+    }
 
+    public void ChangeVibro()
+    {
+        PlayerPrefs.SetInt("VibroEffects", PlayerPrefs.GetInt("VibroEffects", 1) == 1 ? 0 : 1);
+        PlayerPrefs.Save();
+        vibroIcon.sprite = vibro[PlayerPrefs.GetInt("VibroEffects", 1)];
+    }
 
-
-
-   public void ExitGame()
-   {
-        Application.Quit();
-   }
-
-   public void PlayGame()
-   {
-        SceneManager.LoadScene("AirHockey");
-   }
+    public void PlayGame()
+    {
+        SceneManager.LoadScene("ChooseMenu");
+    }
 }
