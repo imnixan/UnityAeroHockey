@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AirHockey.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Tutor.unity
+    guid: 02cdeb7281deddc4f8b24dd02c74191f
   m_configObjects: {}

@@ -17,4 +17,9 @@ public class ChooseMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Multiplayer");
     }
+
+    public void Tutor()
+    {
+        SceneManager.LoadScene("Tutor");
+    }
 }
